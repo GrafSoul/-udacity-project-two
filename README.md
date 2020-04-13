@@ -1,22 +1,20 @@
-# Project Two - Landing Page (HTML, CSS, JavaScript).
+# Project Two - Landing Page (JavaScript).
 Training project for [Udacity.com]
 
-### Project structure (Under development)
+### Project structure
 
 ```html
 /css/                   // Folder for css files.
-    style.css           // Main file for combining all styles
+    style.css           // File contain CSS styles used in the project.
 
-/design/                // Folder for design layout.   
-    index.jpg           // The layout of the main page.
+/js/                    // Folder for js files.   
+    app.js              // File contain JavaScript code used in the project.
 
-/images/                // Folder for images. 
-    ...                 // Images for blog.
-
-/index.html              // Project home page.
+/index.html             // File contain HTML project page markup.
 ```
 
 ### Copyright
-The contents of the repository can be freely used and distributed.
+The project is based on the [Udacity repository].
 
 [Udacity.com]: https://www.udacity.com/
+[Udacity repository]: https://github.com/udacity/fend/tree/refresh-2019/projects/landing-page
