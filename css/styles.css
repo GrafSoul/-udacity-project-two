@@ -23,13 +23,11 @@ body {
 h1 {
     font-family: 'Fira Sans', sans-serif;
     font-size: 3em;
-    margin: 2em 1rem;
 }
 
 @media only screen and (min-width: 35em){
     h1 {
         font-size: 7em;
-        margin: 2em 4rem 1em;
     }
 }
 
@@ -47,7 +45,14 @@ p {
 
 /* ---- Layout Rules ---- */
 main {
-    margin: 10vh 1em 10vh;
+    margin: 0 1em 10vh;
+    padding: 10em 1rem;
+}
+
+@media only screen and (min-width: 35em){
+    main {
+        padding: 8em 4rem 1em;
+    }
 }
 
 .main-hero {
@@ -82,6 +87,7 @@ section {
     color: #000;
 }
 
+.navbar__menu .menu__link.active,
 .navbar__menu .menu__link:hover {
     background: #333;
     color: #fff;
@@ -95,6 +101,10 @@ section {
     top: 0;
     width: 100%;
     z-index: 5;
+    display: block;
+    visibility: visible;
+    opacity: 1;
+    transition: all 1s ease-in-out;
 }
 
 /* Footer Styles */
@@ -194,17 +204,17 @@ section:nth-of-type(3n + 1) .landing__container::after {
 /* ---- Theme State Rules ---- */
 /* Section Active Styles */
 /* Note: your-active-class class is applied through javascript. You should update the class here and in the index.html to what you set in your javascript file.  */
-section.your-active-class {
+section.active-section {
     background: rgb(0, 0, 0);
     background: linear-gradient(0deg, rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0) 100%);
 }
 
-section.your-active-class .landing__container::before {
+section.active-section .landing__container::before {
     opacity: 1;
     animation: rotate 4s linear 0s infinite forwards;
 }
 
-section.your-active-class .landing__container::after {
+section.active-section .landing__container::after {
     opacity: 1;
     animation: rotate 5s linear 0s infinite forwards reverse;
 }
