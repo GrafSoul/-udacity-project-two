@@ -4,13 +4,17 @@ Training project for [Udacity.com]
 ### Project structure
 
 ```html
-/css/                   // Folder for css files.
-    style.css           // File contain CSS styles used in the project.
+/css/                   // folder for css files.
+    style.css           // file contain CSS styles used in the project.
 
-/js/                    // Folder for js files.   
-    app.js              // File contain JavaScript code used in the project.
+/js/                    // folder for js files.   
+    app.js              // file contain JavaScript code used in the project.
 
-/index.html             // File contain HTML project page markup.
+/.gitignore             // file to exclude files and folders from the repository.
+/package-lock.json      // npm configuration file.
+/package.json           // npm configuration file.
+/.eslintrc.js           // Сonfiguration file for Eslint.
+/index.html             // аile contain HTML project page markup.
 ```
 
 ### Copyright
