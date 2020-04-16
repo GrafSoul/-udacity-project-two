@@ -219,6 +219,38 @@ section.active-section .landing__container::after {
     animation: rotate 5s linear 0s infinite forwards reverse;
 }
 
+/* Scroll Up styles*/
+#scroll-up {
+    width: 44px;
+    height: 44px;
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    border: 1px solid rgb(255,255,255);
+    visibility: hidden;
+    opacity: 0;
+    z-index: 5;
+    transition: all 0.6s ease-in;
+}
+
+#scroll-up .scroll-link {
+    width: 44px;
+    height: 34px;
+    padding: 10px 0 0;
+    display: block;
+    color: rgba(255,255,255,1);
+    background-color: rgba(255,255,255,0.1);
+    text-align: center;    
+    font-size: 1.3em;
+    font-display: bold;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+#scroll-up .scroll-link:hover {
+    color: rgb(53, 53, 53);
+    background-color: rgba(255,255,255,0.8);
+}
 
 /* Section Active Styles Keyframe Animations */
 @keyframes rotate {

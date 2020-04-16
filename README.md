@@ -10,6 +10,9 @@ Training project for [Udacity.com]
 /js/                    // folder for js files.   
     app.js              // file contain JavaScript code used in the project.
 
+/images/                // folder for favicon images.  
+    ...
+
 /.gitignore             // file to exclude files and folders from the repository.
 /package-lock.json      // npm configuration file.
 /package.json           // npm configuration file.

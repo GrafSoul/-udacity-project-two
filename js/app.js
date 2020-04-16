@@ -17,16 +17,20 @@
  * Define Global Variables
  * 
 */
+'use strict';
+
 const section = document.querySelectorAll('section');
 const pageHeader = document.querySelector('.page__header');
 const navMenu = document.getElementById('navbar__list');
 let fragmentMenu = document.createDocumentFragment();
+let statePosition = 0;
 
 /**
  * End Global Variables
  * Start Helper Functions
  * 
 */
+
 /**
 * @description Helper for create new html element.
 * @param {string} tag - the name of the tag of the new element.
@@ -97,13 +101,20 @@ const createMenuList = (id, name) => {
 * @description Build list menu and add tag <ul>
 */
 const buildMenu = () => {
+
+    // const startingTime = performance.now();
+
     section.forEach((item, index) => {
         let id = section[index].getAttribute('id');
+        // let name = section[index].getAttribute('data-nav');
         let name = section[index].dataset.nav;
         let newListItem = createMenuList(id, name);
 
         fragmentMenu.appendChild(newListItem);
     });
+
+    // const endingTime = performance.now();
+    // console.log(`This code took ${(endingTime - startingTime).toFixed(3)} milliseconds.`);
 
     navMenu.appendChild(createMenuList('top', 'Home'));
     navMenu.appendChild(fragmentMenu);
@@ -129,12 +140,20 @@ const activeSection = (id) => {
     });
 };
 
+/**
+* @description Сreate a ScrollUp button and add an event listener to it.
+*/
+const createScrollUp = () => {
+    let scrollBox = createNewElement('div', 'scroll-up');
+    let scrollLink = createNewElement('a', '', 'scroll-link');
 
-// Add class 'active' to section when near top of viewport
+    scrollLink.setAttribute('href', '#top');
+    scrollLink.innerText = 'UP';
+    handleScrollUp(scrollLink);
 
-
-// Scroll to anchor ID using scrollTO event
-
+    scrollBox.appendChild(scrollLink);
+    document.body.appendChild(scrollBox);
+};
 
 /**
  * End Main Functions
@@ -165,23 +184,100 @@ const activeLinks = () => {
                 activeSection(currentId);
                 scrollContent(currentId);
 
-                pageHeader.style.opacity = 0; 
-                pageHeader.style.visibility = 'hidden';
+                /**
+                 * Another option for implementing menu animation
+                 */
+                // pageHeader.style.opacity = 0; 
+                // pageHeader.style.visibility = 'hidden';
 
-                setTimeout(() => {
-                    pageHeader.style.opacity = 1;
-                    pageHeader.style.visibility = 'visible';
-                }, 1500);
-
+                // setTimeout(() => {
+                //     pageHeader.style.opacity = 1;
+                //     pageHeader.style.visibility = 'visible';
+                // }, 1500);
             }
         });	
     });
 };
 
+/**
+* @description Set up an event listener for the ScrollUp button.
+* @param {object} scrollLink - the object to which the event listener 
+* will be connected with a set of expressions for execution.
+*/
+const handleScrollUp = (scrollLink) => {
+
+    scrollLink.addEventListener('click', (e) => {
+        e.preventDefault();
+
+        let menuLihks = document.querySelectorAll('.menu__link');
+        let currentLihk = document.querySelector('.active');
+
+        currentLihk.classList.remove('active');
+        menuLihks[0].classList.add('active');
+
+        scrollContent('top');
+    });
+};
+
+/**
+* @description Setting the properties of the "ScrollUp" button
+* when scrolling a page.
+* @param {object} item - element to which properties are applied.
+* @param {number} pos - current distance from top of page.
+* @param {number} size - customizable distance from the top of the page.
+*/
+const toggleScrollUp = (item, pos, size) => {
+    if (pos > size) {        
+        item.style.opacity = 1;
+        item.style.visibility = 'visible';
+    } else {
+        item.style.opacity = 0;
+        item.style.visibility = 'hidden';
+    }
+};
+
+/**
+* @description Setting the properties of the Header and MainMenu
+* when scrolling a page.
+* @param {object} item - element to which properties are applied.
+* @param {number} pos - current distance from top of page.
+* @param {number} size - customizable distance from the top of the page.
+*/
+const toggleHeader = (item, pos, size) => {
+
+    if (pos > size && pos > statePosition) {
+        item.style.opacity = 0; 
+        item.style.visibility = 'hidden';
+    } else {            
+        item.style.opacity = 1;
+        item.style.visibility = 'visible';
+    }
+};
+
+/**
+* @description We track the position of the page when scrolling and change
+* the properties of the elements.
+*/
+window.onscroll = () => {
+    const scrollTop = document.querySelector('#scroll-up');
+
+    let positionTop = (window.pageYOffset !== undefined) ?
+        window.pageYOffset :
+        (document.documentElement ||
+        document.body.parentNode ||
+        document.body).scrollTop;
+
+    toggleScrollUp(scrollTop, positionTop, 400);
+    // Comment out the lines below in the second version of the menu animation
+    toggleHeader(pageHeader, positionTop, 800); 
+    statePosition = positionTop;
+};
+
 // Build MainMenu.
 buildMenu();
 
-// Scroll to section on link click
+// Add ScrollUp button.
+createScrollUp();
 
-// Set sections as active
+// Set Sections as active.
 activeLinks();
