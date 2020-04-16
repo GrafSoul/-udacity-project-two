@@ -34,17 +34,16 @@ let statePosition = 0;
 /**
 * @description Helper for create new html element.
 * @param {string} tag - the name of the tag of the new element.
-* @param {string} id - identifier of the new element (optional).
-* @param {string} className - the class name of the new element (optional).
-* @param {string} text - inner text for the element (optional).
+* @param {string} id (args[0])- identifier of the new element (optional).
+* @param {string} className (args[1]) - the class name of the new element (optional).
+* @param {string} text (args[2]) - inner text for the element (optional).
 * @returns {object} - new HTML element
 */
-const createNewElement = (tag, id='', className='',  text='') => {
+const createNewElement = (tag, ...args) => {
     let newElement = document.createElement(tag);
-
-    id !== '' ? newElement.id = id : null;
-    className !== '' ? newElement.classList.add(className) : null;
-    text !== '' ? newElement.innerText = text : null;
+    args[0] !== undefined ? newElement.id = args[0] : null;
+    args[1] !== undefined ? newElement.classList.add(args[1]) : null;
+    args[2] !== undefined ? newElement.innerText = args[2] : null;
 
     return newElement;
 };
