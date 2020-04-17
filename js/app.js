@@ -37,7 +37,7 @@ let statePosition = 0;
 * @param {string} id (args[0])- identifier of the new element (optional).
 * @param {string} className (args[1]) - the class name of the new element (optional).
 * @param {string} text (args[2]) - inner text for the element (optional).
-* @returns {object} - new HTML element
+* @returns {Node} - new HTML element
 */
 const createNewElement = (tag, ...args) => {
     let newElement = document.createElement(tag);
@@ -59,6 +59,21 @@ const scrollContent = (id) => {
     });
 };
 
+/** 
+ * @description Determine if an element is in the viewport.
+ * (c) 2017 Chris Ferdinandi, MIT License, https://gomakethings.com
+ * @param  {Node} elem - The element
+ * @return {boolean} Returns true if element is in the viewport
+ */
+const isInViewport = function (elem) {
+    let distance = elem.getBoundingClientRect();
+    return (
+        distance.top >= 0 && distance.left >= 0 &&
+        distance.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+        distance.right <= (window.innerWidth || document.documentElement.clientWidth)
+    );
+};
+
 /**
  * End Helper Functions
  * Begin Main Functions
@@ -70,11 +85,12 @@ const scrollContent = (id) => {
 * @param {string} link - specifying an anchor to refer to an element.
 * @param {string} className - the class name of the new element.
 * @param {string} text - inner text for the element.
-* @returns {object} - new <a> tag.
+* @returns {Node} - new <a> tag.
 */
 const createMenuLink = (link, className, text) => {
     let newlink = createNewElement('a', '', className, text);
     newlink.setAttribute('href', `#${link}`);
+    newlink.setAttribute('id', `link_${link}`);
 
     return newlink;
 };
@@ -83,7 +99,7 @@ const createMenuLink = (link, className, text) => {
 * @description Creating navigation bar elements using <li> tags.
 * @param {string} id - identifier names to create a link to it.
 * @param {string} name - text for tag <a>.
-* @returns {object} - new <li> tag with the <a> tag inside.
+* @returns {Node} - new <li> tag with the <a> tag inside.
 */
 const createMenuList = (id, name) => {
     let listItem = createNewElement('li');
@@ -101,22 +117,39 @@ const createMenuList = (id, name) => {
 */
 const buildMenu = () => {
 
-    // const startingTime = performance.now();
-
     section.forEach((item, index) => {
         let id = section[index].getAttribute('id');
-        // let name = section[index].getAttribute('data-nav');
         let name = section[index].dataset.nav;
         let newListItem = createMenuList(id, name);
 
         fragmentMenu.appendChild(newListItem);
     });
 
-    // const endingTime = performance.now();
-    // console.log(`This code took ${(endingTime - startingTime).toFixed(3)} milliseconds.`);
-
     navMenu.appendChild(createMenuList('top', 'Home'));
     navMenu.appendChild(fragmentMenu);
+};
+
+/**
+* @description Add the 'active' class to the Main Menu items.
+* @param {string} id - id of the active section.
+*/
+const activeMenuItem = (id) => {
+    const menuLihks = document.querySelectorAll('.menu__link');
+
+    menuLihks.forEach(itemLink => {
+        let currentLink = itemLink.getAttribute('id').split('_')[1];
+        itemLink.classList.remove('active');
+
+        if(currentLink === id) {
+ 
+            itemLink.classList.add('active');
+        } else if(id === 'top'){
+            menuLihks[1].classList.remove('active');
+            menuLihks[0].classList.add('active');
+        } else {
+            itemLink.classList.remove('active');
+        }
+    });
 };
 
 /**
@@ -125,6 +158,7 @@ const buildMenu = () => {
 * @param {string} id - id of the active section to which the class will be connected.
 */
 const activeSection = (id) => {
+
     section.forEach(itemSection => {
         let currentSection = itemSection.getAttribute('id');
         itemSection.classList.remove('active-section');
@@ -171,29 +205,8 @@ const activeLinks = () => {
         itemLink.addEventListener('click', (e) => {
             e.preventDefault();
 
-            let currentLihk = document.querySelector('.active');
-            currentLihk.classList.remove('active');
-            
-            if(itemLink.classList.contains('active')){
-                itemLink.classList.remove('active');
-            }else {
-                itemLink.classList.add('active');
-                let currentId = itemLink.getAttribute('href').slice(1);
-
-                activeSection(currentId);
-                scrollContent(currentId);
-
-                /**
-                 * Another option for implementing menu animation
-                 */
-                // pageHeader.style.opacity = 0; 
-                // pageHeader.style.visibility = 'hidden';
-
-                // setTimeout(() => {
-                //     pageHeader.style.opacity = 1;
-                //     pageHeader.style.visibility = 'visible';
-                // }, 1500);
-            }
+            let currentId = itemLink.getAttribute('href').slice(1);
+            scrollContent(currentId);
         });	
     });
 };
@@ -207,13 +220,7 @@ const handleScrollUp = (scrollLink) => {
 
     scrollLink.addEventListener('click', (e) => {
         e.preventDefault();
-
-        let menuLihks = document.querySelectorAll('.menu__link');
-        let currentLihk = document.querySelector('.active');
-
-        currentLihk.classList.remove('active');
-        menuLihks[0].classList.add('active');
-
+        
         scrollContent('top');
     });
 };
@@ -226,6 +233,7 @@ const handleScrollUp = (scrollLink) => {
 * @param {number} size - customizable distance from the top of the page.
 */
 const toggleScrollUp = (item, pos, size) => {
+
     if (pos > size) {        
         item.style.opacity = 1;
         item.style.visibility = 'visible';
@@ -258,7 +266,9 @@ const toggleHeader = (item, pos, size) => {
 * the properties of the elements.
 */
 window.onscroll = () => {
+
     const scrollTop = document.querySelector('#scroll-up');
+    const firstSection = section[0].getAttribute('id')
 
     let positionTop = (window.pageYOffset !== undefined) ?
         window.pageYOffset :
@@ -266,11 +276,24 @@ window.onscroll = () => {
         document.body.parentNode ||
         document.body).scrollTop;
 
+    section.forEach(itemSection => {
+        let currentId = itemSection.getAttribute('id');
+
+        if(isInViewport(itemSection)){
+            if(currentId === firstSection && positionTop < 350) {
+                activeMenuItem('top');
+            } else {
+                activeMenuItem(currentId);
+                activeSection(currentId);
+            }
+        }
+    });
+
     toggleScrollUp(scrollTop, positionTop, 400);
-    // Comment out the lines below in the second version of the menu animation
-    toggleHeader(pageHeader, positionTop, 800); 
+    toggleHeader(pageHeader, positionTop, 600);
     statePosition = positionTop;
 };
+
 
 // Build MainMenu.
 buildMenu();
